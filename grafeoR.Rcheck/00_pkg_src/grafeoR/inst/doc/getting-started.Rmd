@@ -1,0 +1,62 @@
+---
+title: "Getting Started with grafeoR"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Getting Started with grafeoR}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+`grafeoR` exposes the embedded Grafeo graph database through an idiomatic R API.
+The package opens either an in-memory database for ad hoc work or a persistent
+database on disk, while query execution is handled by Grafeo's Rust engine.
+
+## Open a database
+
+```{r eval = FALSE}
+library(grafeoR)
+
+db <- grafeo_db()
+```
+
+## Insert data
+
+```{r eval = FALSE}
+db$execute("INSERT (:Person {name: 'Alix', age: 30})")
+db$execute("INSERT (:Person {name: 'Gus', age: 41})")
+```
+
+## Query rows back into R
+
+```{r eval = FALSE}
+people <- db$query("MATCH (p:Person) RETURN p.name, p.age")
+people
+```
+
+## Use transactions
+
+```{r eval = FALSE}
+tx <- db$begin()
+tx$execute("INSERT (:Person {name: 'Transaction Demo'})")
+tx$commit()
+```
+
+## Inspect metadata
+
+```{r eval = FALSE}
+db$info()
+grafeo_version()
+```
+
+## Close the database
+
+```{r eval = FALSE}
+db$close()
+```

@@ -1,0 +1,13 @@
+^src/\.cargo$
+^src/rust/vendor$
+^src/rust/target$
+^src/Makevars$
+^src/Makevars\.win$
+^src/.*\.(o|so)$
+^\.gitignore$
+^src/\.gitignore$
+^\.\.Rcheck$
+^grafeoR\.Rcheck$
+^grafeoR_.*\.tar\.gz$
+^data-raw$
+^tmp$
