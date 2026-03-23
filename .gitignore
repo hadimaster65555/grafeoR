@@ -1,3 +1,22 @@
-src/rust/vendor
+# R session files
+.Rhistory
+.RData
+.Ruserdata
+.Rproj.user/
+
+# Package build and check artifacts
+*.Rcheck/
+..Rcheck/
+*.tar.gz
+tmp/
+
+# Generated package build files
 src/Makevars
 src/Makevars.win
+src/symbols.rds
+src/vendor/
+src/rust/target/
+src/rust/vendor/
+
+# macOS metadata
+.DS_Store
