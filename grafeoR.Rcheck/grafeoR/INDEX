@@ -1,7 +1,0 @@
-as.data.frame.grafeo_result
-                        Convert a Grafeo result to a data frame
-grafeo_db               Create an embedded Grafeo database handle
-grafeo_version          Return the linked Grafeo engine version
-openflights_sample_data
-                        Load the bundled OpenFlights sample dataset
-print.grafeo_result     Print a Grafeo query result

@@ -1,5 +1,0 @@
-as.data.frame.grafeo_result
-                        Convert a Grafeo result to a data frame
-grafeo_db               Create an embedded Grafeo database handle
-grafeo_version          Return the linked Grafeo engine version
-print.grafeo_result     Print a Grafeo query result
