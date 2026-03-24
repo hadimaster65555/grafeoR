@@ -1,5 +1,6 @@
 ---
 title: "Getting Started with grafeoR"
+description: "Open an embedded Grafeo database, run queries, and work with transactions from R."
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{Getting Started with grafeoR}

@@ -1,6 +1,8 @@
 # grafeoR
 
-`grafeoR` provides R bindings for the embedded [Grafeo](https://grafeo.dev/) graph database, implemented in Rust with `extendr` and `rextendr`.
+`grafeoR` provides R bindings for the embedded
+[Grafeo](https://grafeo.dev/) graph database, implemented in Rust with
+`extendr` and `rextendr`.
 
 Documentation site: <https://hadimaster65555.github.io/grafeoR/>
 
@@ -13,7 +15,9 @@ Current package scope:
 - bundled real-world OpenFlights sample data
 - a visualization example built with `ggplot2`
 
-The package is currently focused on the embedded LPG/GQL workflow. It does not yet expose Grafeo server features, RDF/SPARQL support, or higher-level graph analysis helpers.
+The package is currently focused on the embedded LPG/GQL workflow. It
+does not yet expose Grafeo server features, RDF/SPARQL support, or
+higher-level graph analysis helpers.
 
 ## Status
 
@@ -28,31 +32,35 @@ Latest local package check result: `Status: OK`.
 
 ## Requirements
 
-- R >= 4.2
-- Rust stable >= 1.91.1
+- R \>= 4.2
+- Rust stable \>= 1.91.1
 - Cargo
 
-`ggplot2` is only needed for the visualization example and vignette, not for the core database API.
+`ggplot2` is only needed for the visualization example and vignette, not
+for the core database API.
 
 ## Install
 
 Install `remotes` if needed, then install directly from GitHub:
 
-```r
+``` r
+
 install.packages("remotes")
 remotes::install_github("hadimaster65555/grafeoR")
 ```
 
 Or install into a custom library:
 
-```r
+``` r
+
 install.packages("remotes")
 remotes::install_github("hadimaster65555/grafeoR", lib = "/path/to/R/library")
 ```
 
 ## Quick Start
 
-```r
+``` r
+
 library(grafeoR)
 
 db <- grafeo_db()
@@ -75,14 +83,18 @@ db$close()
 
 ## Real-World Example: OpenFlights
 
-The package bundles a compact OpenFlights subset for offline demos and smoke tests:
+The package bundles a compact OpenFlights subset for offline demos and
+smoke tests:
 
-- 20 airports with the highest outbound route counts in the upstream snapshot
-- 1,129 airline route records whose endpoints are both inside that 20-airport subset
+- 20 airports with the highest outbound route counts in the upstream
+  snapshot
+- 1,129 airline route records whose endpoints are both inside that
+  20-airport subset
 
 Load the bundled data directly in R:
 
-```r
+``` r
+
 library(grafeoR)
 
 sample <- openflights_sample_data()
@@ -94,7 +106,7 @@ sample$metadata
 
 Run the full real-world example:
 
-```bash
+``` bash
 Rscript inst/examples/openflights-example.R
 ```
 
@@ -109,23 +121,28 @@ That script:
 
 Vignettes:
 
-- [Getting Started](https://hadimaster65555.github.io/grafeoR/articles/getting-started.html)
-- [OpenFlights Analysis](https://hadimaster65555.github.io/grafeoR/articles/openflights-analysis.html)
+- [Getting
+  Started](https://hadimaster65555.github.io/grafeoR/articles/getting-started.html)
+- [OpenFlights
+  Analysis](https://hadimaster65555.github.io/grafeoR/articles/openflights-analysis.html)
 
 Runnable examples:
 
-- [Basic example](https://github.com/hadimaster65555/grafeoR/blob/main/inst/examples/basic-example.R)
-- [OpenFlights example](https://github.com/hadimaster65555/grafeoR/blob/main/inst/examples/openflights-example.R)
+- [Basic
+  example](https://github.com/hadimaster65555/grafeoR/blob/main/inst/examples/basic-example.R)
+- [OpenFlights
+  example](https://github.com/hadimaster65555/grafeoR/blob/main/inst/examples/openflights-example.R)
 
 ## API Surface
 
 User-facing functions:
 
-- `grafeo_db()`
-- `grafeo_version()`
-- `openflights_sample_data()`
+- [`grafeo_db()`](https://hadimaster65555.github.io/grafeoR/reference/grafeo_db.md)
+- [`grafeo_version()`](https://hadimaster65555.github.io/grafeoR/reference/grafeo_version.md)
+- [`openflights_sample_data()`](https://hadimaster65555.github.io/grafeoR/reference/openflights_sample_data.md)
 
-`grafeo_db()` returns an R6 database handle with:
+[`grafeo_db()`](https://hadimaster65555.github.io/grafeoR/reference/grafeo_db.md)
+returns an R6 database handle with:
 
 - `db$execute(query)`
 - `db$query(query)`
@@ -142,7 +159,8 @@ Transactions use an R6 handle with:
 
 ## Example: Persistent Database
 
-```r
+``` r
+
 library(grafeoR)
 
 db <- grafeo_db(path = "example.grafeo", in_memory = FALSE)
@@ -158,15 +176,18 @@ db$close()
 
 The bundled sample data is derived from OpenFlights:
 
-- https://openflights.org/data.php
-- https://raw.githubusercontent.com/jpatokal/openflights/master/data/airports.dat
-- https://raw.githubusercontent.com/jpatokal/openflights/master/data/routes.dat
+- <https://openflights.org/data.php>
+- <https://raw.githubusercontent.com/jpatokal/openflights/master/data/airports.dat>
+- <https://raw.githubusercontent.com/jpatokal/openflights/master/data/routes.dat>
 
-The bundled attribution note is in [inst/extdata/openflights-README.md](https://github.com/hadimaster65555/grafeoR/blob/main/inst/extdata/openflights-README.md).
+The bundled attribution note is in
+[inst/extdata/openflights-README.md](https://github.com/hadimaster65555/grafeoR/blob/main/inst/extdata/openflights-README.md).
 
-OpenFlights states that the Airport, Airline, Plane and Route databases are made available under the Open Database License (ODbL) v1.0, with individual contents under the Database Contents License (DbCL) v1.0.
+OpenFlights states that the Airport, Airline, Plane and Route databases
+are made available under the Open Database License (ODbL) v1.0, with
+individual contents under the Database Contents License (DbCL) v1.0.
 
 ## Upstream Grafeo
 
-- Grafeo GitHub: https://github.com/GrafeoDB/grafeo
-- Grafeo docs: https://grafeo.dev/
+- Grafeo GitHub: <https://github.com/GrafeoDB/grafeo>
+- Grafeo docs: <https://grafeo.dev/>

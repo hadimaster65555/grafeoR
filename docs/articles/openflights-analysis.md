@@ -1,48 +1,52 @@
----
-title: "OpenFlights Analysis with grafeoR"
-description: "Load the bundled OpenFlights subset into Grafeo and visualize hubs and routes with ggplot2."
-output: rmarkdown::html_vignette
-vignette: >
-  %\VignetteIndexEntry{OpenFlights Analysis with grafeoR}
-  %\VignetteEngine{knitr::rmarkdown}
-  %\VignetteEncoding{UTF-8}
----
+# OpenFlights Analysis with grafeoR
 
-```{r, include = FALSE}
-knitr::opts_chunk$set(
-  collapse = TRUE,
-  comment = "#>"
-)
-```
+``` r
 
-```{r setup}
 library(grafeoR)
 library(ggplot2)
 ```
 
-The package ships with a compact real-world OpenFlights subset so you can test
-the Rust binding against graph data that looks like an actual transport
-network, not just toy nodes and edges.
+The package ships with a compact real-world OpenFlights subset so you
+can test the Rust binding against graph data that looks like an actual
+transport network, not just toy nodes and edges.
 
 The bundled sample contains:
 
 - the 20 airports with the highest outbound route counts in the upstream
   OpenFlights snapshot
-- the 1,129 airline route records whose source and destination are both inside
-  that 20-airport subset
+- the 1,129 airline route records whose source and destination are both
+  inside that 20-airport subset
 
-```{r load-data}
+``` r
+
 sample <- openflights_sample_data()
 
 dim(sample$airports)
+#> [1] 20  7
 dim(sample$routes)
+#> [1] 1129    5
 head(sample$airports[, c("iata", "city", "country", "snapshot_outbound_routes")])
+#>   iata      city        country snapshot_outbound_routes
+#> 1  ATL   Atlanta  United States                      915
+#> 2  ORD   Chicago  United States                      558
+#> 3  PEK   Beijing          China                      535
+#> 4  LHR    London United Kingdom                      527
+#> 5  CDG     Paris         France                      524
+#> 6  FRA Frankfurt        Germany                      497
 head(sample$routes)
+#>   airline source_iata dest_iata stops equipment
+#> 1      DL         AMS       ATL     0   333 76W
+#> 2      KL         AMS       ATL     0       777
+#> 3      HV         AMS       BCN     0   73H 73W
+#> 4      IB         AMS       BCN     0       320
+#> 5      KL         AMS       BCN     0       737
+#> 6      MU         AMS       BCN     0       737
 ```
 
 ## Load the graph into Grafeo
 
-```{r helpers}
+``` r
+
 gql_string <- function(x) {
   if (is.null(x) || is.na(x)) {
     return("NULL")
@@ -101,19 +105,45 @@ load_openflights_graph <- function(db, sample) {
 }
 ```
 
-```{r build-graph}
+``` r
+
 db <- grafeo_db()
 
 load_openflights_graph(db, sample)
 db$info()
+#> $graph_model
+#> [1] "LPG"
+#> 
+#> $node_count
+#> [1] 20
+#> 
+#> $edge_count
+#> [1] 1129
+#> 
+#> $is_persistent
+#> [1] FALSE
+#> 
+#> $path
+#> NULL
+#> 
+#> $wal_enabled
+#> [1] FALSE
+#> 
+#> $version
+#> [1] "0.5.23"
+#> 
+#> $current_graph
+#> NULL
 ```
 
 ## Query airport and route data back into R
 
-For the charts below, `grafeoR` is used to pull nodes and edges back into R as
-data frames, and the aggregation for plotting is handled on the R side.
+For the charts below, `grafeoR` is used to pull nodes and edges back
+into R as data frames, and the aggregation for plotting is handled on
+the R side.
 
-```{r query-graph}
+``` r
+
 airports_tbl <- db$query(
   paste(
     "MATCH (a:Airport)",
@@ -153,12 +183,34 @@ route_segments <- route_segments[
 ]
 
 head(airports_tbl[, c("a.iata", "a.city", "a.country", "a.snapshot_outbound_routes")])
+#>   a.iata    a.city      a.country a.snapshot_outbound_routes
+#> 1    ATL   Atlanta  United States                        915
+#> 2    ORD   Chicago  United States                        558
+#> 3    PEK   Beijing          China                        535
+#> 4    LHR    London United Kingdom                        527
+#> 5    CDG     Paris         France                        524
+#> 6    FRA Frankfurt        Germany                        497
 head(route_segments)
+#>    source_iata source_lat source_lng dest_iata dest_lat   dest_lng
+#> 55         ORD    41.9786 -87.904800       ATL  33.6367 -84.428101
+#> 40         ATL    33.6367 -84.428101       ORD  41.9786 -87.904800
+#> 69         ATL    33.6367 -84.428101       MIA  25.7932 -80.290604
+#> 98         JFK    40.6398 -73.778900       LHR  51.4706  -0.461941
+#> 81         LHR    51.4706  -0.461941       JFK  40.6398 -73.778900
+#> 56         MIA    25.7932 -80.290604       ATL  33.6367 -84.428101
+#>    airline_count
+#> 55            20
+#> 40            19
+#> 69            12
+#> 98            12
+#> 81            12
+#> 56            12
 ```
 
 ## Visualize the hubs
 
-```{r top-hubs-plot, fig.width=8, fig.height=5}
+``` r
+
 top_hubs <- airports_tbl[seq_len(min(10L, nrow(airports_tbl))), , drop = FALSE]
 top_hubs$airport <- factor(
   paste(top_hubs$a.iata, top_hubs$a.city, sep = " - "),
@@ -190,9 +242,12 @@ ggplot(
   )
 ```
 
+![](openflights-analysis_files/figure-html/top-hubs-plot-1.png)
+
 ## Visualize the route network
 
-```{r route-map-plot, fig.width=10, fig.height=6}
+``` r
+
 labels <- airports_tbl[seq_len(min(10L, nrow(airports_tbl))), , drop = FALSE]
 
 ggplot() +
@@ -250,10 +305,8 @@ ggplot() +
   )
 ```
 
-The bundled sample is documented in
-`inst/extdata/openflights-README.md`, including the upstream source URLs and
-license attribution to OpenFlights.
+![](openflights-analysis_files/figure-html/route-map-plot-1.png)
 
-```{r cleanup, include = FALSE}
-db$close()
-```
+The bundled sample is documented in
+`inst/extdata/openflights-README.md`, including the upstream source URLs
+and license attribution to OpenFlights.

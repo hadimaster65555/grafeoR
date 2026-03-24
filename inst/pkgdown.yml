@@ -1,0 +1,10 @@
+pandoc: '3.9'
+pkgdown: 2.2.0
+pkgdown_sha: ~
+articles:
+  getting-started: getting-started.html
+  openflights-analysis: openflights-analysis.html
+last_built: 2026-03-24T14:29Z
+urls:
+  reference: https://hadimaster65555.github.io/grafeoR/reference
+  article: https://hadimaster65555.github.io/grafeoR/articles

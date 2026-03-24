@@ -1,0 +1,55 @@
+url: https://hadimaster65555.github.io/grafeoR/
+
+template:
+  bootstrap: 5
+
+home:
+  title: grafeoR
+  description: R bindings for the embedded Grafeo graph database.
+  sidebar:
+    structure: [resources, license, citation, authors, toc]
+    components:
+      resources:
+        title: Resources
+        text: |
+          [Grafeo upstream docs](https://grafeo.dev/)
+
+          [Source code](https://github.com/hadimaster65555/grafeoR)
+
+navbar:
+  structure:
+    left: [home, reference, articles]
+    right: [search, github]
+  components:
+    home:
+      text: Home
+      href: index.html
+
+reference:
+  - title: Core database API
+    desc: Open embedded Grafeo databases, execute GQL, and inspect engine metadata.
+    contents:
+      - grafeo_db
+      - grafeo_version
+
+  - title: Bundled sample data
+    desc: Load the offline OpenFlights subset used by examples and vignettes.
+    contents:
+      - openflights_sample_data
+
+  - title: Results and package docs
+    desc: Helpers for working with query results and package-level overview topics.
+    contents:
+      - as.data.frame.grafeo_result
+      - print.grafeo_result
+      - grafeoR-package
+
+articles:
+  - title: Articles
+    navbar: Articles
+    contents:
+      - getting-started
+      - openflights-analysis
+
+deploy:
+  install_metadata: true

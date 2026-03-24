@@ -9,7 +9,7 @@ Description: CRAN-first R bindings for the embedded Grafeo graph database,
     implemented in Rust via extendr and rextendr. The package provides an
     idiomatic R interface for opening in-memory or persistent Grafeo
     databases, executing GQL queries, and working with transactions.
-URL: https://github.com/GrafeoDB/grafeo, https://grafeo.dev/
+URL: https://hadimaster65555.github.io/grafeoR/, https://github.com/hadimaster65555/grafeoR, https://github.com/GrafeoDB/grafeo, https://grafeo.dev/
 License: Apache License (>= 2)
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
@@ -23,7 +23,9 @@ Imports:
 Suggests:
     ggplot2,
     knitr,
+    pkgdown,
     rmarkdown,
     testthat (>= 3.0.0)
 VignetteBuilder: knitr
+Config/Needs/website: pkgdown
 Config/testthat/edition: 3
