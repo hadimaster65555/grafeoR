@@ -34,16 +34,18 @@ Latest local package check result: `Status: OK`.
 
 ## Install
 
-From the package source tree:
+Install `remotes` if needed, then install directly from GitHub:
 
-```bash
-R CMD INSTALL .
+```r
+install.packages("remotes")
+remotes::install_github("hadimaster65555/grafeoR")
 ```
 
 Or install into a custom library:
 
-```bash
-R CMD INSTALL . -l /path/to/R/library
+```r
+install.packages("remotes")
+remotes::install_github("hadimaster65555/grafeoR", lib = "/path/to/R/library")
 ```
 
 ## Quick Start
