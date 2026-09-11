@@ -44,6 +44,11 @@ jobs:
           extra-packages: any::rcmdcheck
           needs: check
       - uses: r-lib/actions/setup-tinytex@v2
+        env:
+          # R CMD check builds the PDF reference manual outside rmarkdown, so
+          # use the fuller supported TinyTeX bundle rather than its minimal
+          # default CTAN set.
+          TINYTEX_INSTALLER: TinyTeX
       - name: Install HTML Tidy
         run: sudo apt-get update && sudo apt-get install --yes tidy
       - uses: r-lib/actions/check-r-package@v2
