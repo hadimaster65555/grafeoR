@@ -47,60 +47,19 @@ head(sample$routes)
 
 ``` r
 
-gql_string <- function(x) {
-  if (is.null(x) || is.na(x)) {
-    return("NULL")
-  }
-
-  value <- gsub("\\\\", "\\\\\\\\", as.character(x), perl = TRUE)
-  value <- gsub("\"", "\\\\\"", value, fixed = TRUE)
-  paste0("\"", value, "\"")
-}
-
 load_openflights_graph <- function(db, sample) {
-  tx <- db$begin()
-  on.exit(
-    if (tx$is_active()) {
-      try(tx$rollback(), silent = TRUE)
-    },
-    add = TRUE
-  )
+  airports <- sample$airports
+  airports$lat <- airports$latitude
+  airports$lng <- airports$longitude
+  airports$latitude <- NULL
+  airports$longitude <- NULL
+  nodes <- db$import_nodes(airports, labels = "Airport", id_col = "iata")
 
-  for (i in seq_len(nrow(sample$airports))) {
-    row <- sample$airports[i, ]
-    tx$execute(sprintf(
-      paste0(
-        "INSERT (:Airport {",
-        "iata: %s, name: %s, city: %s, country: %s, ",
-        "lat: %.6f, lng: %.6f, snapshot_outbound_routes: %d",
-        "})"
-      ),
-      gql_string(row$iata),
-      gql_string(row$name),
-      gql_string(row$city),
-      gql_string(row$country),
-      row$latitude,
-      row$longitude,
-      as.integer(row$snapshot_outbound_routes)
-    ))
-  }
-
-  for (i in seq_len(nrow(sample$routes))) {
-    row <- sample$routes[i, ]
-    tx$execute(sprintf(
-      paste0(
-        "MATCH (src:Airport {iata: %s}), (dst:Airport {iata: %s}) ",
-        "INSERT (src)-[:ROUTE {airline: %s, stops: %d, equipment: %s}]->(dst)"
-      ),
-      gql_string(row$source_iata),
-      gql_string(row$dest_iata),
-      gql_string(row$airline),
-      as.integer(row$stops),
-      gql_string(row$equipment)
-    ))
-  }
-
-  tx$commit()
+  routes <- sample$routes
+  node_ids <- setNames(nodes$ids, nodes$keys)
+  routes$source_id <- unname(node_ids[as.character(routes$source_iata)])
+  routes$target_id <- unname(node_ids[as.character(routes$dest_iata)])
+  db$import_edges(routes, "source_id", "target_id", "ROUTE")
   invisible(db)
 }
 ```
@@ -113,12 +72,12 @@ load_openflights_graph(db, sample)
 db$info()
 #> $graph_model
 #> [1] "LPG"
-#> 
+#>
 #> $node_count
-#> [1] 20
+#> [1] "20"
 #> 
 #> $edge_count
-#> [1] 1129
+#> [1] "1129"
 #> 
 #> $is_persistent
 #> [1] FALSE
@@ -129,8 +88,11 @@ db$info()
 #> $wal_enabled
 #> [1] FALSE
 #> 
+#> $read_only
+#> [1] FALSE
+#>
 #> $version
-#> [1] "0.5.23"
+#> [1] "0.5.42"
 #> 
 #> $current_graph
 #> NULL

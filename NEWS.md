@@ -1,4 +1,4 @@
-# grafeoR 0.0.0.9000
+# grafeoR 0.1.0
 
 ## New features
 

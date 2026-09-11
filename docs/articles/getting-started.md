@@ -26,7 +26,10 @@ db$execute("INSERT (:Person {name: 'Gus', age: 41})")
 
 ``` r
 
-people <- db$query("MATCH (p:Person) RETURN p.name, p.age")
+people <- db$query(
+  "MATCH (p:Person) WHERE p.name = $name RETURN p.name, p.age",
+  params = list(name = "Alix")
+)
 people
 ```
 

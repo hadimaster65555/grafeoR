@@ -4,6 +4,8 @@ publish = false
 version = "0.1.0"
 edition = "2024"
 rust-version = "1.91.1"
+license = "Apache-2.0"
+repository = "https://github.com/hadimaster65555/grafeoR"
 
 [lib]
 crate-type = ["staticlib"]

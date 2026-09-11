@@ -22,7 +22,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">grafeoR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.0.0.9000</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -110,60 +110,19 @@ both inside that 20-airport subset</li>
 <h2 id="load-the-graph-into-grafeo">Load the graph into Grafeo<a class="anchor" aria-label="anchor" href="#load-the-graph-into-grafeo"></a>
 </h2>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">gql_string</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="op">{</span></span>
-<span>  <span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/NULL.html" class="external-link">is.null</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="op">||</span> <span class="fu"><a href="https://rdrr.io/r/base/NA.html" class="external-link">is.na</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
-<span>    <span class="kw"><a href="https://rdrr.io/r/base/function.html" class="external-link">return</a></span><span class="op">(</span><span class="st">"NULL"</span><span class="op">)</span></span>
-<span>  <span class="op">}</span></span>
+<code class="sourceCode R"><span><span class="va">load_openflights_graph</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">db</span>, <span class="va">sample</span><span class="op">)</span> <span class="op">{</span></span>
+<span>  <span class="va">airports</span> <span class="op">&lt;-</span> <span class="va">sample</span><span class="op">$</span><span class="va">airports</span></span>
+<span>  <span class="va">airports</span><span class="op">$</span><span class="va">lat</span> <span class="op">&lt;-</span> <span class="va">airports</span><span class="op">$</span><span class="va">latitude</span></span>
+<span>  <span class="va">airports</span><span class="op">$</span><span class="va">lng</span> <span class="op">&lt;-</span> <span class="va">airports</span><span class="op">$</span><span class="va">longitude</span></span>
+<span>  <span class="va">airports</span><span class="op">$</span><span class="va">latitude</span> <span class="op">&lt;-</span> <span class="cn">NULL</span></span>
+<span>  <span class="va">airports</span><span class="op">$</span><span class="va">longitude</span> <span class="op">&lt;-</span> <span class="cn">NULL</span></span>
+<span>  <span class="va">nodes</span> <span class="op">&lt;-</span> <span class="va">db</span><span class="op">$</span><span class="fu">import_nodes</span><span class="op">(</span><span class="va">airports</span>, labels <span class="op">=</span> <span class="st">"Airport"</span>, id_col <span class="op">=</span> <span class="st">"iata"</span><span class="op">)</span></span>
 <span></span>
-<span>  <span class="va">value</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/grep.html" class="external-link">gsub</a></span><span class="op">(</span><span class="st">"\\\\"</span>, <span class="st">"\\\\\\\\"</span>, <span class="fu"><a href="https://rdrr.io/r/base/character.html" class="external-link">as.character</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span>, perl <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
-<span>  <span class="va">value</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/grep.html" class="external-link">gsub</a></span><span class="op">(</span><span class="st">"\""</span>, <span class="st">"\\\\\""</span>, <span class="va">value</span>, fixed <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
-<span>  <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"\""</span>, <span class="va">value</span>, <span class="st">"\""</span><span class="op">)</span></span>
-<span><span class="op">}</span></span>
-<span></span>
-<span><span class="va">load_openflights_graph</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">db</span>, <span class="va">sample</span><span class="op">)</span> <span class="op">{</span></span>
-<span>  <span class="va">tx</span> <span class="op">&lt;-</span> <span class="va">db</span><span class="op">$</span><span class="fu">begin</span><span class="op">(</span><span class="op">)</span></span>
-<span>  <span class="fu"><a href="https://rdrr.io/r/base/on.exit.html" class="external-link">on.exit</a></span><span class="op">(</span></span>
-<span>    <span class="kw">if</span> <span class="op">(</span><span class="va">tx</span><span class="op">$</span><span class="fu">is_active</span><span class="op">(</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
-<span>      <span class="kw"><a href="https://rdrr.io/r/base/try.html" class="external-link">try</a></span><span class="op">(</span><span class="va">tx</span><span class="op">$</span><span class="fu">rollback</span><span class="op">(</span><span class="op">)</span>, silent <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
-<span>    <span class="op">}</span>,</span>
-<span>    add <span class="op">=</span> <span class="cn">TRUE</span></span>
-<span>  <span class="op">)</span></span>
-<span></span>
-<span>  <span class="kw">for</span> <span class="op">(</span><span class="va">i</span> <span class="kw">in</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq_len</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">sample</span><span class="op">$</span><span class="va">airports</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
-<span>    <span class="va">row</span> <span class="op">&lt;-</span> <span class="va">sample</span><span class="op">$</span><span class="va">airports</span><span class="op">[</span><span class="va">i</span>, <span class="op">]</span></span>
-<span>    <span class="va">tx</span><span class="op">$</span><span class="fu">execute</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/sprintf.html" class="external-link">sprintf</a></span><span class="op">(</span></span>
-<span>      <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span></span>
-<span>        <span class="st">"INSERT (:Airport {"</span>,</span>
-<span>        <span class="st">"iata: %s, name: %s, city: %s, country: %s, "</span>,</span>
-<span>        <span class="st">"lat: %.6f, lng: %.6f, snapshot_outbound_routes: %d"</span>,</span>
-<span>        <span class="st">"})"</span></span>
-<span>      <span class="op">)</span>,</span>
-<span>      <span class="fu">gql_string</span><span class="op">(</span><span class="va">row</span><span class="op">$</span><span class="va">iata</span><span class="op">)</span>,</span>
-<span>      <span class="fu">gql_string</span><span class="op">(</span><span class="va">row</span><span class="op">$</span><span class="va">name</span><span class="op">)</span>,</span>
-<span>      <span class="fu">gql_string</span><span class="op">(</span><span class="va">row</span><span class="op">$</span><span class="va">city</span><span class="op">)</span>,</span>
-<span>      <span class="fu">gql_string</span><span class="op">(</span><span class="va">row</span><span class="op">$</span><span class="va">country</span><span class="op">)</span>,</span>
-<span>      <span class="va">row</span><span class="op">$</span><span class="va">latitude</span>,</span>
-<span>      <span class="va">row</span><span class="op">$</span><span class="va">longitude</span>,</span>
-<span>      <span class="fu"><a href="https://rdrr.io/r/base/integer.html" class="external-link">as.integer</a></span><span class="op">(</span><span class="va">row</span><span class="op">$</span><span class="va">snapshot_outbound_routes</span><span class="op">)</span></span>
-<span>    <span class="op">)</span><span class="op">)</span></span>
-<span>  <span class="op">}</span></span>
-<span></span>
-<span>  <span class="kw">for</span> <span class="op">(</span><span class="va">i</span> <span class="kw">in</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq_len</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">sample</span><span class="op">$</span><span class="va">routes</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
-<span>    <span class="va">row</span> <span class="op">&lt;-</span> <span class="va">sample</span><span class="op">$</span><span class="va">routes</span><span class="op">[</span><span class="va">i</span>, <span class="op">]</span></span>
-<span>    <span class="va">tx</span><span class="op">$</span><span class="fu">execute</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/sprintf.html" class="external-link">sprintf</a></span><span class="op">(</span></span>
-<span>      <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span></span>
-<span>        <span class="st">"MATCH (src:Airport {iata: %s}), (dst:Airport {iata: %s}) "</span>,</span>
-<span>        <span class="st">"INSERT (src)-[:ROUTE {airline: %s, stops: %d, equipment: %s}]-&gt;(dst)"</span></span>
-<span>      <span class="op">)</span>,</span>
-<span>      <span class="fu">gql_string</span><span class="op">(</span><span class="va">row</span><span class="op">$</span><span class="va">source_iata</span><span class="op">)</span>,</span>
-<span>      <span class="fu">gql_string</span><span class="op">(</span><span class="va">row</span><span class="op">$</span><span class="va">dest_iata</span><span class="op">)</span>,</span>
-<span>      <span class="fu">gql_string</span><span class="op">(</span><span class="va">row</span><span class="op">$</span><span class="va">airline</span><span class="op">)</span>,</span>
-<span>      <span class="fu"><a href="https://rdrr.io/r/base/integer.html" class="external-link">as.integer</a></span><span class="op">(</span><span class="va">row</span><span class="op">$</span><span class="va">stops</span><span class="op">)</span>,</span>
-<span>      <span class="fu">gql_string</span><span class="op">(</span><span class="va">row</span><span class="op">$</span><span class="va">equipment</span><span class="op">)</span></span>
-<span>    <span class="op">)</span><span class="op">)</span></span>
-<span>  <span class="op">}</span></span>
-<span></span>
-<span>  <span class="va">tx</span><span class="op">$</span><span class="fu">commit</span><span class="op">(</span><span class="op">)</span></span>
+<span>  <span class="va">routes</span> <span class="op">&lt;-</span> <span class="va">sample</span><span class="op">$</span><span class="va">routes</span></span>
+<span>  <span class="va">node_ids</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/setNames.html" class="external-link">setNames</a></span><span class="op">(</span><span class="va">nodes</span><span class="op">$</span><span class="va">ids</span>, <span class="va">nodes</span><span class="op">$</span><span class="va">keys</span><span class="op">)</span></span>
+<span>  <span class="va">routes</span><span class="op">$</span><span class="va">source_id</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/unname.html" class="external-link">unname</a></span><span class="op">(</span><span class="va">node_ids</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/character.html" class="external-link">as.character</a></span><span class="op">(</span><span class="va">routes</span><span class="op">$</span><span class="va">source_iata</span><span class="op">)</span><span class="op">]</span><span class="op">)</span></span>
+<span>  <span class="va">routes</span><span class="op">$</span><span class="va">target_id</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/unname.html" class="external-link">unname</a></span><span class="op">(</span><span class="va">node_ids</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/character.html" class="external-link">as.character</a></span><span class="op">(</span><span class="va">routes</span><span class="op">$</span><span class="va">dest_iata</span><span class="op">)</span><span class="op">]</span><span class="op">)</span></span>
+<span>  <span class="va">db</span><span class="op">$</span><span class="fu">import_edges</span><span class="op">(</span><span class="va">routes</span>, <span class="st">"source_id"</span>, <span class="st">"target_id"</span>, <span class="st">"ROUTE"</span><span class="op">)</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/invisible.html" class="external-link">invisible</a></span><span class="op">(</span><span class="va">db</span><span class="op">)</span></span>
 <span><span class="op">}</span></span></code></pre></div>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
@@ -175,10 +134,10 @@ both inside that 20-airport subset</li>
 <span><span class="co">#&gt; [1] "LPG"</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $node_count</span></span>
-<span><span class="co">#&gt; [1] 20</span></span>
+<span><span class="co">#&gt; [1] "20"</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $edge_count</span></span>
-<span><span class="co">#&gt; [1] 1129</span></span>
+<span><span class="co">#&gt; [1] "1129"</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $is_persistent</span></span>
 <span><span class="co">#&gt; [1] FALSE</span></span>
@@ -189,8 +148,11 @@ both inside that 20-airport subset</li>
 <span><span class="co">#&gt; $wal_enabled</span></span>
 <span><span class="co">#&gt; [1] FALSE</span></span>
 <span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; $read_only</span></span>
+<span><span class="co">#&gt; [1] FALSE</span></span>
+<span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $version</span></span>
-<span><span class="co">#&gt; [1] "0.5.23"</span></span>
+<span><span class="co">#&gt; [1] "0.5.42"</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $current_graph</span></span>
 <span><span class="co">#&gt; NULL</span></span></code></pre></div>

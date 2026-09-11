@@ -22,7 +22,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">grafeoR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.0.0.9000</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -93,7 +93,10 @@ execution is handled by Grafeo’s Rust engine.</p>
 <h2 id="query-rows-back-into-r">Query rows back into R<a class="anchor" aria-label="anchor" href="#query-rows-back-into-r"></a>
 </h2>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">people</span> <span class="op">&lt;-</span> <span class="va">db</span><span class="op">$</span><span class="fu">query</span><span class="op">(</span><span class="st">"MATCH (p:Person) RETURN p.name, p.age"</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="va">people</span> <span class="op">&lt;-</span> <span class="va">db</span><span class="op">$</span><span class="fu">query</span><span class="op">(</span></span>
+<span>  <span class="st">"MATCH (p:Person) WHERE p.name = $name RETURN p.name, p.age"</span>,</span>
+<span>  params <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>name <span class="op">=</span> <span class="st">"Alix"</span><span class="op">)</span></span>
+<span><span class="op">)</span></span>
 <span><span class="va">people</span></span></code></pre></div>
 </div>
 <div class="section level2">

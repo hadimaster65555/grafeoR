@@ -6,9 +6,15 @@ R bindings for the embedded Grafeo graph database.
 
 Useful links:
 
+- <https://hadimaster65555.github.io/grafeoR/>
+
+- <https://github.com/hadimaster65555/grafeoR>
+
 - <https://github.com/GrafeoDB/grafeo>
 
 - <https://grafeo.dev/>
+
+- Report bugs at <https://github.com/hadimaster65555/grafeoR/issues>
 
 ## Author
 

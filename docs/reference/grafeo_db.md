@@ -7,7 +7,15 @@ filesystem path for a persistent database.
 ## Usage
 
 ``` r
-grafeo_db(path = NULL, in_memory = is.null(path), wal = !is.null(path))
+grafeo_db(
+  path = NULL,
+  in_memory = is.null(path),
+  wal = !is.null(path),
+  read_only = FALSE,
+  query_timeout = NULL,
+  memory_limit = NULL,
+  spill_path = NULL
+)
 ```
 
 ## Arguments
@@ -24,7 +32,23 @@ grafeo_db(path = NULL, in_memory = is.null(path), wal = !is.null(path))
 - wal:
 
   Whether write-ahead logging should be enabled for persistent
-  databases. Ignored for in-memory databases.
+  databases. Ignored for in-memory and read-only databases.
+
+- read_only:
+
+  Open a persistent database with a shared lock and reject mutations.
+
+- query_timeout:
+
+  Optional query timeout in milliseconds.
+
+- memory_limit:
+
+  Optional execution/storage memory limit in bytes.
+
+- spill_path:
+
+  Optional directory for spilling query intermediates.
 
 ## Value
 
@@ -39,7 +63,7 @@ db$execute("INSERT (:Person {name: 'Alix', age: 30})")
 #>   rows: 1 
 #>   columns: 1 
 #>   gql_status: 00000 
-#>   execution_time_ms: 0.754875 
+#>   execution_time_ms: 1.074834
 #>   rows_scanned: 1 
 #>               _anon_0
 #> 1 0, Person, 30, Alix

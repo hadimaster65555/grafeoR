@@ -22,7 +22,7 @@
 
     <a class="navbar-brand me-2" href="index.html">grafeoR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.0.0.9000</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -74,14 +74,7 @@
 <div class="section level2">
 <h2 id="status">Status<a class="anchor" aria-label="anchor" href="#status"></a>
 </h2>
-<p>The current development snapshot has been validated locally with:</p>
-<ul>
-<li><code>R CMD INSTALL . -l /tmp/grafeoR-lib</code></li>
-<li><code>R_LIBS=/tmp/grafeoR-lib Rscript inst/examples/openflights-example.R</code></li>
-<li><code>R CMD build .</code></li>
-<li><code>R CMD check --no-manual grafeoR_0.0.0.9000.tar.gz</code></li>
-</ul>
-<p>Latest local package check result: <code>Status: OK</code>.</p>
+<p>The package is tested from its vendored Rust dependency archive so builds do not need network access during compilation. The bundled Grafeo engine is 0.5.42.</p>
 </div>
 <div class="section level2">
 <h2 id="requirements">Requirements<a class="anchor" aria-label="anchor" href="#requirements"></a>
@@ -109,14 +102,17 @@
 <h2 id="quick-start">Quick Start<a class="anchor" aria-label="anchor" href="#quick-start"></a>
 </h2>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/GrafeoDB/grafeo" class="external-link">grafeoR</a></span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://hadimaster65555.github.io/grafeoR/">grafeoR</a></span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">db</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/grafeo_db.html">grafeo_db</a></span><span class="op">(</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">db</span><span class="op">$</span><span class="fu">execute</span><span class="op">(</span><span class="st">"INSERT (:Person {name: 'Alix', age: 30})"</span><span class="op">)</span></span>
 <span><span class="va">db</span><span class="op">$</span><span class="fu">execute</span><span class="op">(</span><span class="st">"INSERT (:Person {name: 'Gus', age: 41})"</span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">people</span> <span class="op">&lt;-</span> <span class="va">db</span><span class="op">$</span><span class="fu">query</span><span class="op">(</span><span class="st">"MATCH (p:Person) RETURN p.name, p.age"</span><span class="op">)</span></span>
+<span><span class="va">people</span> <span class="op">&lt;-</span> <span class="va">db</span><span class="op">$</span><span class="fu">query</span><span class="op">(</span></span>
+<span>  <span class="st">"MATCH (p:Person) WHERE p.name = $name RETURN p.name, p.age"</span>,</span>
+<span>  params <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>name <span class="op">=</span> <span class="st">"Alix"</span><span class="op">)</span></span>
+<span><span class="op">)</span></span>
 <span><span class="va">people</span></span>
 <span></span>
 <span><span class="va">tx</span> <span class="op">&lt;-</span> <span class="va">db</span><span class="op">$</span><span class="fu">begin</span><span class="op">(</span><span class="op">)</span></span>
@@ -138,7 +134,7 @@
 </ul>
 <p>Load the bundled data directly in R:</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/GrafeoDB/grafeo" class="external-link">grafeoR</a></span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://hadimaster65555.github.io/grafeoR/">grafeoR</a></span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">sample</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/openflights_sample_data.html">openflights_sample_data</a></span><span class="op">(</span><span class="op">)</span></span>
 <span></span>
@@ -150,7 +146,7 @@
 <p>That script:</p>
 <ul>
 <li>loads the bundled OpenFlights sample into an in-memory Grafeo database</li>
-<li>inserts airports as nodes and routes as edges</li>
+<li>imports airports and routes through the transaction-backed bulk APIs</li>
 <li>queries airport and route data back into R</li>
 <li>saves <code>openflights-top-hubs.png</code> and <code>openflights-route-map.png</code>
 </li>
@@ -176,38 +172,48 @@
 <p>User-facing functions:</p>
 <ul>
 <li><code><a href="reference/grafeo_db.html">grafeo_db()</a></code></li>
+<li><code><a href="reference/grafeo_capabilities.html">grafeo_capabilities()</a></code></li>
 <li><code><a href="reference/grafeo_version.html">grafeo_version()</a></code></li>
 <li><code><a href="reference/openflights_sample_data.html">openflights_sample_data()</a></code></li>
+<li><code><a href="reference/with_grafeo_db.html">with_grafeo_db()</a></code></li>
+<li><code><a href="reference/with_grafeo_transaction.html">with_grafeo_transaction()</a></code></li>
 </ul>
 <p><code><a href="reference/grafeo_db.html">grafeo_db()</a></code> returns an R6 database handle with:</p>
 <ul>
-<li><code>db$execute(query)</code></li>
-<li><code>db$query(query)</code></li>
-<li><code>db$begin()</code></li>
+<li><code>db$execute(query, params = list())</code></li>
+<li><code>db$query(query, params = list())</code></li>
+<li><code>db$begin(isolation = "snapshot")</code></li>
+<li><code>db$import_nodes(data, labels, id_col = NULL)</code></li>
+<li><code>db$import_edges(data, source, target, type)</code></li>
+<li>
+<code>db$nodes()</code> and <code>db$edges()</code>
+</li>
 <li><code>db$info()</code></li>
 <li><code>db$close()</code></li>
 </ul>
 <p>Transactions use an R6 handle with:</p>
 <ul>
-<li><code>tx$execute(query)</code></li>
-<li><code>tx$query(query)</code></li>
+<li><code>tx$execute(query, params = list())</code></li>
+<li><code>tx$query(query, params = list())</code></li>
 <li><code>tx$commit()</code></li>
 <li><code>tx$rollback()</code></li>
 </ul>
+<p>Parameters are named lists and use Grafeo’s <code>$name</code> placeholders. Scalar logical, integer, double, character, raw, <code>Date</code>, <code>POSIXct</code>, vector, list, and named-map values are supported. Query results expose <code>column_types</code>; large Grafeo <code>INT64</code> values are returned as exact decimal strings when an R numeric would lose precision.</p>
 </div>
 <div class="section level2">
 <h2 id="example-persistent-database">Example: Persistent Database<a class="anchor" aria-label="anchor" href="#example-persistent-database"></a>
 </h2>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/GrafeoDB/grafeo" class="external-link">grafeoR</a></span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://hadimaster65555.github.io/grafeoR/">grafeoR</a></span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">db</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/grafeo_db.html">grafeo_db</a></span><span class="op">(</span>path <span class="op">=</span> <span class="st">"example.grafeo"</span>, in_memory <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
+<span><span class="va">db</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/grafeo_db.html">grafeo_db</a></span><span class="op">(</span>path <span class="op">=</span> <span class="st">"example.grafeo"</span><span class="op">)</span></span>
 <span><span class="va">db</span><span class="op">$</span><span class="fu">execute</span><span class="op">(</span><span class="st">"INSERT (:Person {name: 'Persistent'})"</span><span class="op">)</span></span>
 <span><span class="va">db</span><span class="op">$</span><span class="fu">close</span><span class="op">(</span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">db</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/grafeo_db.html">grafeo_db</a></span><span class="op">(</span>path <span class="op">=</span> <span class="st">"example.grafeo"</span>, in_memory <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
+<span><span class="va">db</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/grafeo_db.html">grafeo_db</a></span><span class="op">(</span>path <span class="op">=</span> <span class="st">"example.grafeo"</span><span class="op">)</span></span>
 <span><span class="va">db</span><span class="op">$</span><span class="fu">query</span><span class="op">(</span><span class="st">"MATCH (p:Person) RETURN p.name"</span><span class="op">)</span></span>
 <span><span class="va">db</span><span class="op">$</span><span class="fu">close</span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
+<p>Grafeo 0.5.35 changed the persistent on-disk format. Databases created by Grafeo 0.5.34 or earlier (including databases created by grafeoR releases based on Grafeo 0.5.23) must be recreated or migrated before opening them with this release; keep a backup before attempting any migration.</p>
 </div>
 <div class="section level2">
 <h2 id="openflights-attribution">OpenFlights Attribution<a class="anchor" aria-label="anchor" href="#openflights-attribution"></a>
@@ -245,7 +251,7 @@
 <div class="license">
 <h2 data-toc-skip>License</h2>
 <ul class="list-unstyled">
-<li>Apache License (&gt;= 2)</li>
+<li>Apache License (&gt;= 2.0)</li>
 </ul>
 </div>
 

@@ -11,7 +11,7 @@ a persistent database."></head><body>
 
     <a class="navbar-brand me-2" href="../index.html">grafeoR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.0.0.9000</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -52,7 +52,15 @@ a persistent database.</p>
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">grafeo_db</span><span class="op">(</span>path <span class="op">=</span> <span class="cn">NULL</span>, in_memory <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/NULL.html" class="external-link">is.null</a></span><span class="op">(</span><span class="va">path</span><span class="op">)</span>, wal <span class="op">=</span> <span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NULL.html" class="external-link">is.null</a></span><span class="op">(</span><span class="va">path</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">grafeo_db</span><span class="op">(</span></span>
+<span>  path <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  in_memory <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/NULL.html" class="external-link">is.null</a></span><span class="op">(</span><span class="va">path</span><span class="op">)</span>,</span>
+<span>  wal <span class="op">=</span> <span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NULL.html" class="external-link">is.null</a></span><span class="op">(</span><span class="va">path</span><span class="op">)</span>,</span>
+<span>  read_only <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  query_timeout <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  memory_limit <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  spill_path <span class="op">=</span> <span class="cn">NULL</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -71,7 +79,24 @@ in-memory database.</p></dd>
 
 <dt id="arg-wal">wal<a class="anchor" aria-label="anchor" href="#arg-wal"></a></dt>
 <dd><p>Whether write-ahead logging should be enabled for persistent
-databases. Ignored for in-memory databases.</p></dd>
+databases. Ignored for in-memory and read-only databases.</p></dd>
+
+
+<dt id="arg-read-only">read_only<a class="anchor" aria-label="anchor" href="#arg-read-only"></a></dt>
+<dd><p>Open a persistent database with a shared lock and reject
+mutations.</p></dd>
+
+
+<dt id="arg-query-timeout">query_timeout<a class="anchor" aria-label="anchor" href="#arg-query-timeout"></a></dt>
+<dd><p>Optional query timeout in milliseconds.</p></dd>
+
+
+<dt id="arg-memory-limit">memory_limit<a class="anchor" aria-label="anchor" href="#arg-memory-limit"></a></dt>
+<dd><p>Optional execution/storage memory limit in bytes.</p></dd>
+
+
+<dt id="arg-spill-path">spill_path<a class="anchor" aria-label="anchor" href="#arg-spill-path"></a></dt>
+<dd><p>Optional directory for spilling query intermediates.</p></dd>
 
 </dl></div>
     <div class="section level2">
@@ -87,7 +112,7 @@ databases. Ignored for in-memory databases.</p></dd>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   rows: 1 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   columns: 1 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   gql_status: 00000 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   execution_time_ms: 0.754875 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   execution_time_ms: 1.074834 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   rows_scanned: 1 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>               _anon_0</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 1 0, Person, 30, Alix</span>

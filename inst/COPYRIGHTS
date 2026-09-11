@@ -1,16 +1,73 @@
-Third-party components
-======================
+Copyright and third-party notices
+==================================
 
-grafeoR includes Rust dependencies vendored in src/rust/vendor.tar.xz. The
-archive contains the license and notice files shipped by each dependency.
-The most significant upstream components are:
+Copyright (c) 2026 Raden Muhammad Hadi.
 
-* Grafeo (grafeo-common, grafeo-core, grafeo-engine, grafeo-storage, and
-  grafeo-adapters), Apache-2.0.
-* extendr-api, extendr-ffi, extendr-macros, and their Rust dependencies,
-  under the licenses recorded in each vendored crate's LICENSE, COPYING, or
-  NOTICE file.
+grafeoR source code is distributed under the Apache License, version 2.0 or
+later, as declared in DESCRIPTION. This notice records the third-party content
+distributed with the source package.
 
-The grafeoR package itself is distributed under the Apache License, version 2.0
-or later. See LICENSE for the package license and the vendored archive for
-the complete dependency license inventory.
+OpenFlights sample data
+-----------------------
+
+`inst/extdata/openflights_top20_airports.csv` and
+`inst/extdata/openflights_top20_routes.csv` are derived from OpenFlights data.
+The databases are available under the Open Database License (ODbL) v1.0 and
+their individual contents under the Database Contents License (DbCL) v1.0.
+Source URLs, attribution, and license URLs are in
+`inst/extdata/openflights-README.md`.
+
+Vendored Rust dependencies
+--------------------------
+
+The exact source and license texts for every Rust dependency are included in
+`src/rust/vendor.tar.xz`. The following inventory is generated from the locked
+dependency metadata in `src/rust/Cargo.lock`; versioned crate names are listed
+under their SPDX license expression.
+
+Apache-2.0
+: grafeo-adapters 0.5.42; grafeo-common 0.5.42; grafeo-core 0.5.42;
+  grafeo-engine 0.5.42; grafeo-storage 0.5.42.
+
+MIT
+: bincode 2.0.1; bincode_derive 2.0.1; bytes 1.11.1; dashmap 6.1.0;
+  extendr-api 0.8.1; extendr-ffi 0.8.1; extendr-macros 0.8.1;
+  redox_syscall 0.5.18; tokio 1.50.0; tokio-macros 2.6.1; virtue 0.0.18.
+
+MIT OR Apache-2.0
+: allocator-api2 0.2.21; bitflags 2.11.0; bumpalo 3.20.2; cfg-if 1.0.4;
+  crc32fast 1.5.0; crossbeam 0.8.4; crossbeam-channel 0.5.15;
+  crossbeam-deque 0.8.6; crossbeam-epoch 0.9.18; crossbeam-queue 0.3.12;
+  crossbeam-utils 0.8.21; hashbrown 0.14.5, 0.16.1, and 0.17.1; libc 0.2.183;
+  lock_api 0.4.14; memmap2 0.9.10; once_cell 1.21.4; parking_lot 0.12.5;
+  parking_lot_core 0.9.12; paste 1.0.15; proc-macro2 1.0.106; quote 1.0.45;
+  regex 1.12.3; regex-automata 0.4.14; regex-syntax 0.8.10;
+  scopeguard 1.2.0; serde 1.0.228; serde_core 1.0.228;
+  serde_derive 1.0.228; smallvec 1.15.1; syn 2.0.117; thiserror 2.0.18;
+  thiserror-impl 2.0.18; unicode-normalization 0.1.25; unty 0.0.4;
+  windows-link 0.2.1.
+
+Apache-2.0 OR MIT
+: equivalent 1.0.2; indexmap 2.13.0; pin-project-lite 0.2.17.
+
+Apache-2.0 OR MIT OR Zlib
+: arcstr 1.2.0.
+
+MIT OR Apache-2.0 OR Zlib
+: tinyvec_macros 0.1.1.
+
+Zlib OR Apache-2.0 OR MIT
+: tinyvec 1.11.0.
+
+MIT/Apache-2.0
+: fs2 0.4.3; winapi 0.3.9; winapi-i686-pc-windows-gnu 0.4.0;
+  winapi-x86_64-pc-windows-gnu 0.4.0.
+
+Unlicense OR MIT
+: aho-corasick 1.1.4; byteorder 1.5.0; memchr 2.8.0.
+
+Zlib
+: foldhash 0.2.0.
+
+(MIT OR Apache-2.0) AND Unicode-3.0
+: unicode-ident 1.0.24.

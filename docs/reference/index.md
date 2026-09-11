@@ -7,8 +7,14 @@ metadata.
 
 - [`grafeo_db()`](https://hadimaster65555.github.io/grafeoR/reference/grafeo_db.md)
   : Create an embedded Grafeo database handle
+- [`grafeo_capabilities()`](https://hadimaster65555.github.io/grafeoR/reference/grafeo_capabilities.md)
+  : Report the compiled Grafeo capabilities
 - [`grafeo_version()`](https://hadimaster65555.github.io/grafeoR/reference/grafeo_version.md)
   : Return the linked Grafeo engine version
+- [`with_grafeo_db()`](https://hadimaster65555.github.io/grafeoR/reference/with_grafeo_db.md)
+  : Run an expression with an automatically closed database
+- [`with_grafeo_transaction()`](https://hadimaster65555.github.io/grafeoR/reference/with_grafeo_transaction.md)
+  : Run an expression in a transaction with rollback on error
 
 ## Bundled sample data
 

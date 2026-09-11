@@ -14,6 +14,11 @@ Generation:
 - keep airline route records whose source and destination are both in that 20-airport subset
 
 License and attribution:
-- OpenFlights states that the Airport, Airline, Plane and Route Databases are made available under the Open Database License (ODbL) v1.0
-- individual contents are licensed under the Database Contents License (DbCL) v1.0
-- this bundled subset is included for example and test purposes with source attribution to OpenFlights
+- OpenFlights states that the Airport, Airline, Plane and Route Databases are
+  made available under the Open Database License (ODbL) v1.0:
+  https://opendatacommons.org/licenses/odbl/1-0/
+- Individual contents are licensed under the Database Contents License (DbCL)
+  v1.0: https://opendatacommons.org/licenses/dbcl/1-0/
+- This bundled subset is included for example and test purposes with source
+  attribution to OpenFlights. It is separate from the Apache-2.0 license that
+  covers grafeoR's source code.
