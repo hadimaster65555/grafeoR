@@ -82,52 +82,25 @@ gql_string <- function(x) {
 }
 
 load_openflights_graph <- function(db, sample) {
-  tx <- db$begin()
-  on.exit(
-    if (tx$is_active()) {
-      try(tx$rollback(), silent = TRUE)
-    },
-    add = TRUE
-  )
-
   airports <- sample$airports
   routes <- sample$routes
+  airports$lat <- airports$latitude
+  airports$lng <- airports$longitude
+  airports$latitude <- NULL
+  airports$longitude <- NULL
 
-  for (i in seq_len(nrow(airports))) {
-    row <- airports[i, ]
-    tx$execute(sprintf(
-      paste0(
-        "INSERT (:Airport {",
-        "iata: %s, name: %s, city: %s, country: %s, ",
-        "lat: %.6f, lng: %.6f, snapshot_outbound_routes: %d",
-        "})"
-      ),
-      gql_string(row$iata),
-      gql_string(row$name),
-      gql_string(row$city),
-      gql_string(row$country),
-      row$latitude,
-      row$longitude,
-      as.integer(row$snapshot_outbound_routes)
-    ))
+  node_result <- db$import_nodes(
+    airports,
+    labels = "Airport",
+    id_col = "iata"
+  )
+  node_ids <- setNames(node_result$ids, node_result$keys)
+  routes$source_id <- unname(node_ids[as.character(routes$source_iata)])
+  routes$target_id <- unname(node_ids[as.character(routes$dest_iata)])
+  if (anyNA(routes$source_id) || anyNA(routes$target_id)) {
+    stop("The route sample contains an airport key not present in the node import.", call. = FALSE)
   }
-
-  for (i in seq_len(nrow(routes))) {
-    row <- routes[i, ]
-    tx$execute(sprintf(
-      paste0(
-        "MATCH (src:Airport {iata: %s}), (dst:Airport {iata: %s}) ",
-        "INSERT (src)-[:ROUTE {airline: %s, stops: %d, equipment: %s}]->(dst)"
-      ),
-      gql_string(row$source_iata),
-      gql_string(row$dest_iata),
-      gql_string(row$airline),
-      as.integer(row$stops),
-      gql_string(row$equipment)
-    ))
-  }
-
-  tx$commit()
+  db$import_edges(routes, source = "source_id", target = "target_id", type = "ROUTE")
   invisible(db)
 }
 

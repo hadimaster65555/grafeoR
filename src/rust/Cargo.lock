@@ -18,12 +18,6 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "683d7910e743518b0e34f1186f92494becacb047c7b6bf616c96772180fef923"
 
 [[package]]
-name = "anyhow"
-version = "1.0.102"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "7f202df86484c868dbad7eaa557ef785d5c66295e41b460ef922eca0723b842c"
-
-[[package]]
 name = "arcstr"
 version = "1.2.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -214,33 +208,25 @@ dependencies = [
 
 [[package]]
 name = "grafeo-adapters"
-version = "0.5.23"
+version = "0.5.42"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "4a405c77bb5615b3b2c1ed41009063b3d7d128d1bf01fa40384280df84b98f9c"
+checksum = "38cf1373a739aeaa070430588c4026b3c1aa11cd0ad6e6673bda22a390aacda4"
 dependencies = [
  "bincode",
- "byteorder",
- "bytes",
- "crc32fast",
- "crossbeam",
- "fs2",
  "grafeo-common",
  "grafeo-core",
- "hashbrown 0.16.1",
- "memmap2",
+ "hashbrown 0.17.1",
  "parking_lot",
  "serde",
  "smallvec",
  "thiserror",
- "tokio",
- "tracing",
 ]
 
 [[package]]
 name = "grafeo-common"
-version = "0.5.23"
+version = "0.5.42"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "5b73b6b5f701c78aa1ac29742ee64a8a120af59f389c273237a1da7733471b3d"
+checksum = "b5f446c25eeedab9cccaabc85060dfa08dac2d1041974244864f36436b81ca5a"
 dependencies = [
  "arcstr",
  "bincode",
@@ -249,7 +235,7 @@ dependencies = [
  "bytes",
  "dashmap",
  "foldhash",
- "hashbrown 0.16.1",
+ "hashbrown 0.17.1",
  "indexmap",
  "parking_lot",
  "serde",
@@ -259,47 +245,70 @@ dependencies = [
 
 [[package]]
 name = "grafeo-core"
-version = "0.5.23"
+version = "0.5.42"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "001d40ac2c007566824e61cbdf7be69cca0ff2ef9d3e04ff5d7c88d66f5ef1bc"
+checksum = "9e185dd750843637a2d99e56100c08ef4cc34ce4a7b5f9cb9566f873bbf54c90"
 dependencies = [
  "arcstr",
+ "bincode",
  "byteorder",
  "bytes",
+ "crc32fast",
  "dashmap",
  "foldhash",
  "grafeo-common",
- "hashbrown 0.16.1",
+ "hashbrown 0.17.1",
  "indexmap",
  "parking_lot",
  "regex",
  "serde",
  "smallvec",
  "thiserror",
- "tokio",
  "unicode-normalization",
 ]
 
 [[package]]
 name = "grafeo-engine"
-version = "0.5.23"
+version = "0.5.42"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "bd1624fff8d493d1f5bf357a4b4ca4ce44a55a576a8cfcac25a29af620a61e53"
+checksum = "ede967e6b0a16396c91752febdf037ab04ca69b851f6fb43565ee5f30586ee0d"
 dependencies = [
- "anyhow",
  "arcstr",
  "bincode",
+ "bytes",
+ "crc32fast",
  "grafeo-adapters",
  "grafeo-common",
  "grafeo-core",
- "hashbrown 0.16.1",
+ "grafeo-storage",
+ "hashbrown 0.17.1",
  "indexmap",
+ "memmap2",
  "parking_lot",
  "regex",
  "serde",
  "smallvec",
  "thiserror",
- "tracing",
+]
+
+[[package]]
+name = "grafeo-storage"
+version = "0.5.42"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "6857029da63e10209ae622ba85a87593ea08646ea17c02d5aa14461c7ff296f7"
+dependencies = [
+ "bincode",
+ "byteorder",
+ "bytes",
+ "crc32fast",
+ "crossbeam",
+ "fs2",
+ "grafeo-common",
+ "memmap2",
+ "parking_lot",
+ "serde",
+ "thiserror",
+ "tokio",
 ]
 
 [[package]]
@@ -322,10 +331,18 @@ name = "hashbrown"
 version = "0.16.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "841d1cc9bed7f9236f321df977030373f4a4163ae1a7dbfe1a51a2c1a51d9100"
+
+[[package]]
+name = "hashbrown"
+version = "0.17.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "ed5909b6e89a2db4456e54cd5f673791d7eca6732202bbf2a9cc504fe2f9b84a"
 dependencies = [
  "allocator-api2",
  "equivalent",
  "foldhash",
+ "serde",
+ "serde_core",
 ]
 
 [[package]]
@@ -573,37 +590,6 @@ dependencies = [
  "proc-macro2",
  "quote",
  "syn",
-]
-
-[[package]]
-name = "tracing"
-version = "0.1.44"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "63e71662fa4b2a2c3a26f570f037eb95bb1f85397f3cd8076caed2f026a6d100"
-dependencies = [
- "pin-project-lite",
- "tracing-attributes",
- "tracing-core",
-]
-
-[[package]]
-name = "tracing-attributes"
-version = "0.1.31"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "7490cfa5ec963746568740651ac6781f701c9c5ea257c58e057f3ba8cf69e8da"
-dependencies = [
- "proc-macro2",
- "quote",
- "syn",
-]
-
-[[package]]
-name = "tracing-core"
-version = "0.1.36"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "db97caf9d906fbde555dd62fa95ddba9eecfd14cb388e4f491a66d74cd5fb79a"
-dependencies = [
- "once_cell",
 ]
 
 [[package]]

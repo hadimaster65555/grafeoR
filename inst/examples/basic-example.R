@@ -89,11 +89,11 @@ run_basic_example <- function() {
   on.exit(unlink(db_path, recursive = TRUE, force = TRUE), add = TRUE)
   on.exit(unlink(wal_path, recursive = TRUE, force = TRUE), add = TRUE)
 
-  persistent <- grafeo_db(path = db_path, in_memory = FALSE)
+  persistent <- grafeo_db(path = db_path)
   persistent$execute("INSERT (:Person {name: 'Persistent'})")
   persistent$close()
 
-  reopened <- grafeo_db(path = db_path, in_memory = FALSE)
+  reopened <- grafeo_db(path = db_path)
   on.exit(try(reopened$close(), silent = TRUE), add = TRUE)
 
   persisted <- reopened$query("MATCH (p:Person) RETURN p.name")

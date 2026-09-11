@@ -1,0 +1,10 @@
+citHeader("To cite grafeoR in publications use:")
+
+bibentry(
+  bibtype = "Manual",
+  title = "grafeoR: R Bindings for the Grafeo Graph Database",
+  author = person("Raden Muhammad", "Hadi"),
+  year = format(Sys.Date(), "%Y"),
+  note = paste0("R package version ", packageVersion("grafeoR")),
+  url = "https://github.com/hadimaster65555/grafeoR"
+)

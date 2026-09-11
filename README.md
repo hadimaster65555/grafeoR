@@ -17,14 +17,9 @@ The package is currently focused on the embedded LPG/GQL workflow. It does not y
 
 ## Status
 
-The current development snapshot has been validated locally with:
-
-- `R CMD INSTALL . -l /tmp/grafeoR-lib`
-- `R_LIBS=/tmp/grafeoR-lib Rscript inst/examples/openflights-example.R`
-- `R CMD build .`
-- `R CMD check --no-manual grafeoR_0.0.0.9000.tar.gz`
-
-Latest local package check result: `Status: OK`.
+The package is tested from its vendored Rust dependency archive so builds do
+not need network access during compilation. The bundled Grafeo engine is
+0.5.42.
 
 ## Requirements
 
@@ -60,7 +55,10 @@ db <- grafeo_db()
 db$execute("INSERT (:Person {name: 'Alix', age: 30})")
 db$execute("INSERT (:Person {name: 'Gus', age: 41})")
 
-people <- db$query("MATCH (p:Person) RETURN p.name, p.age")
+people <- db$query(
+  "MATCH (p:Person) WHERE p.name = $name RETURN p.name, p.age",
+  params = list(name = "Alix")
+)
 people
 
 tx <- db$begin()
@@ -101,7 +99,7 @@ Rscript inst/examples/openflights-example.R
 That script:
 
 - loads the bundled OpenFlights sample into an in-memory Grafeo database
-- inserts airports as nodes and routes as edges
+- imports airports and routes through the transaction-backed bulk APIs
 - queries airport and route data back into R
 - saves `openflights-top-hubs.png` and `openflights-route-map.png`
 
@@ -122,37 +120,54 @@ Runnable examples:
 User-facing functions:
 
 - `grafeo_db()`
+- `grafeo_capabilities()`
 - `grafeo_version()`
 - `openflights_sample_data()`
+- `with_grafeo_db()`
+- `with_grafeo_transaction()`
 
 `grafeo_db()` returns an R6 database handle with:
 
-- `db$execute(query)`
-- `db$query(query)`
-- `db$begin()`
+- `db$execute(query, params = list())`
+- `db$query(query, params = list())`
+- `db$begin(isolation = "snapshot")`
+- `db$import_nodes(data, labels, id_col = NULL)`
+- `db$import_edges(data, source, target, type)`
+- `db$nodes()` and `db$edges()`
 - `db$info()`
 - `db$close()`
 
 Transactions use an R6 handle with:
 
-- `tx$execute(query)`
-- `tx$query(query)`
+- `tx$execute(query, params = list())`
+- `tx$query(query, params = list())`
 - `tx$commit()`
 - `tx$rollback()`
+
+Parameters are named lists and use Grafeo's `$name` placeholders. Scalar
+logical, integer, double, character, raw, `Date`, `POSIXct`, vector, list, and
+named-map values are supported. Query results expose `column_types`; large
+Grafeo `INT64` values are returned as exact decimal strings when an R numeric
+would lose precision.
 
 ## Example: Persistent Database
 
 ```r
 library(grafeoR)
 
-db <- grafeo_db(path = "example.grafeo", in_memory = FALSE)
+db <- grafeo_db(path = "example.grafeo")
 db$execute("INSERT (:Person {name: 'Persistent'})")
 db$close()
 
-db <- grafeo_db(path = "example.grafeo", in_memory = FALSE)
+db <- grafeo_db(path = "example.grafeo")
 db$query("MATCH (p:Person) RETURN p.name")
 db$close()
 ```
+
+Grafeo 0.5.35 changed the persistent on-disk format. Databases created by
+Grafeo 0.5.34 or earlier (including databases created by grafeoR releases
+based on Grafeo 0.5.23) must be recreated or migrated before opening them with
+this release; keep a backup before attempting any migration.
 
 ## OpenFlights Attribution
 

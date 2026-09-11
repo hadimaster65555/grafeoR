@@ -30,7 +30,10 @@ reference:
     desc: Open embedded Grafeo databases, execute GQL, and inspect engine metadata.
     contents:
       - grafeo_db
+      - grafeo_capabilities
       - grafeo_version
+      - with_grafeo_db
+      - with_grafeo_transaction
 
   - title: Bundled sample data
     desc: Load the offline OpenFlights subset used by examples and vignettes.

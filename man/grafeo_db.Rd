@@ -4,7 +4,15 @@
 \alias{grafeo_db}
 \title{Create an embedded Grafeo database handle}
 \usage{
-grafeo_db(path = NULL, in_memory = is.null(path), wal = !is.null(path))
+grafeo_db(
+  path = NULL,
+  in_memory = is.null(path),
+  wal = !is.null(path),
+  read_only = FALSE,
+  query_timeout = NULL,
+  memory_limit = NULL,
+  spill_path = NULL
+)
 }
 \arguments{
 \item{path}{A single path string for a persistent database, or \code{NULL} for an
@@ -14,7 +22,16 @@ in-memory database.}
 \code{is.null(path)}.}
 
 \item{wal}{Whether write-ahead logging should be enabled for persistent
-databases. Ignored for in-memory databases.}
+databases. Ignored for in-memory and read-only databases.}
+
+\item{read_only}{Open a persistent database with a shared lock and reject
+mutations.}
+
+\item{query_timeout}{Optional query timeout in milliseconds.}
+
+\item{memory_limit}{Optional execution/storage memory limit in bytes.}
+
+\item{spill_path}{Optional directory for spilling query intermediates.}
 }
 \value{
 A \code{GrafeoDB} R6 object.

@@ -11,3 +11,9 @@
 ^grafeoR_.*\.tar\.gz$
 ^data-raw$
 ^tmp$
+^docs$
+^PLAN\.md$
+^cran-comments\.md$
+^\.github$
+^\.mcp\.json$
+^_pkgdown\.yml$

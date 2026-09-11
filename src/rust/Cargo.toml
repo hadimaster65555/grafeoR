@@ -11,8 +11,8 @@ name = "grafeoR"
 
 [dependencies]
 extendr-api = { version = "0.8.1", features = ["result_condition"] }
-grafeo-common = "0.5.23"
-grafeo-engine = { version = "0.5.23", default-features = false, features = ["gql", "wal", "grafeo-file", "spill", "mmap", "regex"] }
+grafeo-common = "0.5.42"
+grafeo-engine = { version = "0.5.42", default-features = false, features = ["lpg", "gql", "wal", "grafeo-file", "spill", "mmap", "regex"] }
 
 [profile.release]
 lto = true

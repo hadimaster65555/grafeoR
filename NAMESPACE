@@ -2,8 +2,11 @@
 
 S3method(as.data.frame,grafeo_result)
 S3method(print,grafeo_result)
+export(grafeo_capabilities)
 export(grafeo_db)
 export(grafeo_version)
 export(openflights_sample_data)
+export(with_grafeo_db)
+export(with_grafeo_transaction)
 importFrom(R6,R6Class)
 useDynLib(grafeoR, .registration = TRUE)

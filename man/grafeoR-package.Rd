@@ -11,8 +11,11 @@ R bindings for the embedded Grafeo graph database.
 \seealso{
 Useful links:
 \itemize{
+  \item \url{https://hadimaster65555.github.io/grafeoR/}
+  \item \url{https://github.com/hadimaster65555/grafeoR}
   \item \url{https://github.com/GrafeoDB/grafeo}
   \item \url{https://grafeo.dev/}
+  \item Report bugs at \url{https://github.com/hadimaster65555/grafeoR/issues}
 }
 
 }

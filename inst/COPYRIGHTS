@@ -1,0 +1,16 @@
+Third-party components
+======================
+
+grafeoR includes Rust dependencies vendored in src/rust/vendor.tar.xz. The
+archive contains the license and notice files shipped by each dependency.
+The most significant upstream components are:
+
+* Grafeo (grafeo-common, grafeo-core, grafeo-engine, grafeo-storage, and
+  grafeo-adapters), Apache-2.0.
+* extendr-api, extendr-ffi, extendr-macros, and their Rust dependencies,
+  under the licenses recorded in each vendored crate's LICENSE, COPYING, or
+  NOTICE file.
+
+The grafeoR package itself is distributed under the Apache License, version 2.0
+or later. See LICENSE for the package license and the vendored archive for
+the complete dependency license inventory.
